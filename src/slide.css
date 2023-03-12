@@ -1,0 +1,14 @@
+.marquee {
+    overflow: hidden; /* hide content that goes beyond the box */
+    white-space: nowrap; /* prevent text from wrapping to the next line */
+    animation: marquee 10s linear infinite; /* set animation duration, timing function and repeat */
+  }
+  
+  @keyframes marquee {
+    0% {
+      transform: translateX(0%); /* starting position */
+    }
+    100% {
+      transform: translateX(-100%); /* ending position */
+    }
+  }
