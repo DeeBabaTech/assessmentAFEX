@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-// import Cipher from '@ibnlanre/cipher'
+import Cipher from '@ibnlanre/cipher'
+import * as dotenv from 'dotenv'
 import line1 from './assets/line1.png'
 import line2 from './assets/line2.png'
 import line3 from './assets/line3.png'
@@ -13,42 +14,34 @@ import './slide.css'
 
 function Dash() {
   const [click, setClick] = useState(false)
-  // const secretKey = "uEKBcN7kMKayW6SF8d0BtaJq60Musbp0"
-  // const vector = "hA7wB3e4v87ihj6R"
 
-  // const handleClick = () => {
-  //   setClick(!click)
-  // }
+  const handleClick = () => {
+    setClick(!click)
+  }
 
-  // const encryption_key = Cipher.generateRandomKey("256");
-  // const initialization_vector = Cipher.generateRandomKey("128");
+  if (typeof process !== 'undefined') {
+  dotenv.config();
 
-  // const cipher = new Cipher({
-  //   encryption_key,
-  //   algorithm: "aes-256-cbc",
-  //   output_decoding: "base64",
-  //   input_encoding: "utf-8",
-  //   initialization_vector,
-  // });
+  const secretKey = process.env.KEY;
+  const vector = "hA7wB3e4v87ihj6R";
 
-  // const form = { foo: "bar", baz: "quz" }
-  // const encryptedData = cipher.encrypt(form);
-  // const decryptedData = cipher.decrypt(encryptedData)
+  const cipher = new Cipher({
+    vector,
+    algorithm: "aes-256-cbc",
+    output_decoding: "base64",
+    input_encoding: "utf-8",
+    secretKey,
+  });
 
-  // console.log(encryptedData)
-  // console.log(decryptedData)
-  console.log(process.env.REACT_APP_KEY)
+  const form = { randomUsername: "DeeBaba", userExperience: "Creative with potentials" }
+  const encryptedData = cipher.encrypt(form);
+  const decryptedData = cipher.decrypt(encryptedData)
 
-  // const handleEncrypt = () => {
-  //   const encrypted = encrypt(text, secretKey);
-  //   setCiphertext(encrypted);
-  //   console.log(ciphertext)
-  // }
-
-  // function handleDecrypt() {
-  //   const decrypted = decrypt(ciphertext, secretKey);
-  //   setDecryptedText(decrypted);
-  // }
+  console.log(encryptedData)
+  console.log(decryptedData)
+} else {
+  console.log('process is not defined') //Rendering, since 'process' object is not defined in browser environments, but only in Node.js
+}
 
   return (
 
@@ -59,9 +52,9 @@ function Dash() {
           <div className="text-sm mt-4 mb-2 p-5">
             Home &gt; <span className='text-red-600'> Market </span>
           </div>
-          <div className="flex justify-between font-semibold text-black mb-3 px-5">
-            <h1 className=" text-3xl ">Market</h1>
-            <div className='flex relative'>
+          <div className="md:flex justify-between font-semibold text-black mb-3 px-5">
+            <h1 className=" text-3xl mb-5 md:mb-0">Market</h1>
+            <div className='flex justify-between relative'>
               <div onClick={handleClick} className="flex z-20 px-2 mr-2 items-center border border-slate-400 rounded-lg cursor-pointer">
                 <p> Page Setting </p>
                 <img src={set} className='w-5 mt-1 ml-2' alt="" />
@@ -100,7 +93,7 @@ function Dash() {
                   <p className='py-2 px-3 items-center border bg-red-600 hover:bg-indigo-800 text-white rounded-lg' onClick={handleClick}> Apply </p>
                 </div>
               </div>
-              <div className="flex px-2 items-center border border-slate-400 rounded-lg">
+              <div className="flex px-2 w-2/5 md:w-fit items-center border border-slate-400 rounded-lg">
                 <p> Demo </p>
                 <img src={down} className='w-5 mt-1 ml-2' alt="" />
               </div>
@@ -108,7 +101,7 @@ function Dash() {
           </div>
           <p className='mb-7 px-5'>Lorem ipsum dolor sit amet consectector. Adipiscing egestas</p>
           <div className='flex flex-wrap justify-between px-5'>
-            <div className='flex items-center justify-between bg-white p-3 md:w-[32%] w-[49%] mb-2 md:mb-0 border border-slate-200 rounded-lg'>
+            <div className='flex items-center justify-between bg-white p-3 md:w-[32%] w-full mb-2 md:mb-0 border border-slate-200 rounded-lg'>
               <div>
                 <p className='mt-3 text-sm'>Cash Balance</p>
                 <p className='text-2xl font-bold my-2 text-black'>N8,374,763</p>
@@ -119,7 +112,7 @@ function Dash() {
               </div>
               <img src={line1} className='w-36' alt="" />
             </div>
-            <div className='flex items-center justify-between bg-white p-3 md:w-[32%] w-[49%] mb-2 md:mb-0 border border-slate-200 rounded-lg'>
+            <div className='flex items-center justify-between bg-white p-3 md:w-[32%] w-full mb-2 md:mb-0 border border-slate-200 rounded-lg'>
               <div>
                 <p className='mt-3 text-sm'>Cash Balance</p>
                 <p className='text-2xl font-bold my-2 text-black'>N8,374,763</p>
@@ -130,7 +123,7 @@ function Dash() {
               </div>
               <img src={line2} className='w-36' alt="" />
             </div>
-            <div className='flex  items-center bg-white p-3 md:w-[35%] w-[49%] mb-2 md:mb-0 border border-slate-200 rounded-lg'>
+            <div className='flex  items-center bg-white p-3 md:w-[35%] w-full mb-2 md:mb-0 border border-slate-200 rounded-lg'>
               <div>
                 <p className='mt-3 text-sm'>Cash Balance</p>
                 <p className='text-2xl font-bold my-2 text-black'>N8,374,763</p>
@@ -144,7 +137,7 @@ function Dash() {
           </div>
 
           <div className='mt-10 px-5'>
-            <div className="flex border-b text-xs font-semibold">
+            <div className="flex border-b w-full text-xs font-semibold overflow-auto">
               <div className="w-fit mr-5 py-3 border-b hover:border-b-black hover:text-black">Product View</div>
               <div className="w-fit mr-5 py-3 border-b border-red-600 text-red-600">Order Book</div>
               <div className="w-fit mr-5 py-3 border-b hover:border-b-black hover:text-black">Price History</div>
@@ -159,8 +152,8 @@ function Dash() {
               </div>
             </div>
 
-            <div className='flex justify-between'>
-              <table className='px-10 text-xs border bg-white pb-5  mt-5 w-[49%] overflow-auto'>
+            <div className='md:flex justify-between'>
+              <table className='px-10 text-xs border bg-white pb-5  mt-5 md:w-[49%] w-full overflow-auto'>
                 <thead>
                   <tr className='text-left h-12'>
                     <th colSpan={4}>
@@ -172,7 +165,7 @@ function Dash() {
                   col='text-green-500'
                 />
               </table>
-              <table className='px-10 text-xs border bg-white pb-5  mt-5 w-[49%] overflow-auto'>
+              <table className='px-10 text-xs border bg-white pb-5  mt-5 md:w-[49%] w-full overflow-auto'>
                 <thead>
                   <tr className='text-left h-12'>
                     <th colSpan={4}>
@@ -185,7 +178,7 @@ function Dash() {
                 />
               </table>
             </div>
-            <table className='px-10 text-xs border bg-white pb-5  mt-5 w-full overflow-auto'>
+            <table className='px-10 text-xs border bg-white pb-5 mt-5 w-full'>
               <thead>
                 <tr className='text-left h-12'>
                   <th colSpan={7}>

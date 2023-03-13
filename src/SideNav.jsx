@@ -11,7 +11,7 @@ import logo from './assets/logo.png'
 
 function SideNav() {
   return (
-    <div className='w-1/12 border-r border-slate-200 bg-white z-10'>
+    <div className='w-1/12 hidden md:block border-r border-slate-200 bg-white z-10'>
       <div className='flex flex-col h-full justify-between'>
         <ul className='flex flex-col items-center'>
           <div className='flex items-center my-5'>
