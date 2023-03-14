@@ -7,6 +7,7 @@ import line3 from './assets/line3.png'
 import set from './assets/set.png'
 import down from './assets/down.png'
 import SideNav from './SideNav'
+import ErrorPage from './ErrorPage'
 import Order from './Order'
 import Trade from './Trade'
 import './slide.css'
@@ -14,6 +15,10 @@ import './slide.css'
 
 function Dash() {
   const [click, setClick] = useState(false)
+  const [hasError, setHasError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [dataInfo, setDataInfo] = useState(null)
+  const [buyInfo, setBuyInfo] = useState(null)
 
   const handleClick = () => {
     setClick(!click)
@@ -25,9 +30,11 @@ function Dash() {
         const encryption_key = 'uEKBcN7kMKayW6SF8d0BtaJq60Musbp0'
         const initialization_vector = "hA7wB3e4v87ihj6R"
 
-        const response = await axios.get("https://comx-sand-api.afex.dev/api/securities/boards?format=json");
-        const data = response.data;
-        
+        const response = await axios.get("https://comx-sand-api.afex.dev/api/security-price/live?format=json");
+        const buySellResponse = await axios.get("https://comx-sand-api.afex.dev/api/securities/boards?format=json");
+        const data = response.data
+        const buySellData = buySellResponse.data
+
         const cipher = new Cipher({
           initialization_vector,
           algorithm: "aes-256-cbc",
@@ -35,23 +42,71 @@ function Dash() {
           input_encoding: "utf-8",
           encryption_key,
         });
-        
-        // const encryptedData = cipher.encrypt(data);
+
+        const decryptedBuySell = cipher.decrypt(buySellData.data);
         const decryptedData = cipher.decrypt(data.data)
-        
-        // console.log(encryptedData)
+
         console.log(decryptedData)
-        // console.log(data)
+        console.log(decryptedBuySell)
+        setDataInfo(decryptedData)
+        setBuyInfo(decryptedBuySell)
       } catch (error) {
         console.log(error)
+        setHasError(true);
+        setErrorMessage(error.message);
       }
     };
     fetchData()
   }, []);
 
+  if (!dataInfo) return null;
+  if (!buyInfo) return null;
+
+  const firstTable = buyInfo.map((info, index) => {
+    return (
+      <Order 
+      key={index}
+      name={info.name}
+      quantity={info.volume_per_unit}
+      price={info.best_buy}
+      action='BUY'
+      color='text-green-500 bg-green-100 w-fit px-2 py-1 rounded-md'
+      col='text-green-500'
+      />
+    )
+  })
+  const secondTable = buyInfo.map((info, index) => {
+    return (
+      <Order 
+      key={index}
+      name={info.name}
+      quantity={info.volume_per_unit}
+      price={info.best_sell}
+      action='SELL'
+      color='text-red-500 bg-red-100 w-fit px-2 py-1 rounded-md'
+      col='text-red-500'
+      />
+    )
+  })
+  const thirdTable = dataInfo.map((info, index) => {
+    return (
+      <Trade
+        key={index}
+        code={info.security_code}
+        board={info.board}
+        order={info.transaction_fee_configurations[0].order_type}
+        price={info.price}
+        created={info.created}
+      />
+    )
+  })
+
+  // Render the error page if an error occurs
+  if (hasError) {
+    return <ErrorPage message={errorMessage} />;
+  }
 
   return (
-
     <div className='bg-[#fbfbfb] h-[100vh] relative text-slate-500 cursor-default'>
       <div className='flex'>
         <SideNav />
@@ -168,9 +223,15 @@ function Dash() {
                     </th>
                   </tr>
                 </thead>
-                <Order color='text-green-500 bg-green-100 w-fit px-2 py-1 rounded-md'
-                  col='text-green-500'
-                />
+                <tbody>
+                  <tr className='border-b text-left h-12 font-semibold'>
+                    <td className='pl-5'>Product</td>
+                    <td>Quantity</td>
+                    <td>Price</td>
+                    <td>Action</td>
+                  </tr>  
+                  {firstTable}
+                </tbody>
               </table>
               <table className='px-10 text-xs border bg-white pb-5  mt-5 md:w-[49%] w-full overflow-auto'>
                 <thead>
@@ -180,9 +241,15 @@ function Dash() {
                     </th>
                   </tr>
                 </thead>
-                <Order color='text-red-500 bg-red-100 w-fit px-2 py-1 rounded-md'
-                  col='text-red-500'
-                />
+                <tbody>
+                  <tr className='border-b text-left h-12 font-semibold'>
+                    <td className='pl-5'>Product</td>
+                    <td>Quantity</td>
+                    <td>Price</td>
+                    <td>Action</td>
+                  </tr>  
+                  {secondTable}
+                </tbody>
               </table>
             </div>
             <table className='px-10 text-xs border bg-white pb-5 mt-5 w-full'>
@@ -193,7 +260,18 @@ function Dash() {
                   </th>
                 </tr>
               </thead>
-              <Trade />
+              <tbody>
+                <tr className='border-b text-left h-12 font-semibold'>
+                  <td className='pl-5'>Security</td>
+                  <td>Board</td>
+                  <td>Order Type</td>
+                  <td>Matched Price</td>
+                  <td>Quantity</td>
+                  <td>Date</td>
+                  <td>Time</td>
+                </tr>
+                {thirdTable}
+              </tbody>
             </table>
           </div>
           <div className="flex mt-20 text-black">
