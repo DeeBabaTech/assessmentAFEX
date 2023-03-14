@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Cipher from '@ibnlanre/cipher'
-import * as dotenv from 'dotenv'
+import axios from 'axios'
 import line1 from './assets/line1.png'
 import line2 from './assets/line2.png'
 import line3 from './assets/line3.png'
@@ -19,29 +19,36 @@ function Dash() {
     setClick(!click)
   }
 
-  if (typeof process !== 'undefined') {
-  dotenv.config();
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const encryption_key = 'uEKBcN7kMKayW6SF8d0BtaJq60Musbp0'
+        const initialization_vector = "hA7wB3e4v87ihj6R"
 
-  const secretKey = process.env.KEY;
-  const vector = "hA7wB3e4v87ihj6R";
+        const response = await axios.get("https://comx-sand-api.afex.dev/api/securities/boards?format=json");
+        const data = response.data;
+        
+        const cipher = new Cipher({
+          initialization_vector,
+          algorithm: "aes-256-cbc",
+          output_decoding: "base64",
+          input_encoding: "utf-8",
+          encryption_key,
+        });
+        
+        // const encryptedData = cipher.encrypt(data);
+        const decryptedData = cipher.decrypt(data.data)
+        
+        // console.log(encryptedData)
+        console.log(decryptedData)
+        // console.log(data)
+      } catch (error) {
+        console.log(error)
+      }
+    };
+    fetchData()
+  }, []);
 
-  const cipher = new Cipher({
-    vector,
-    algorithm: "aes-256-cbc",
-    output_decoding: "base64",
-    input_encoding: "utf-8",
-    secretKey,
-  });
-
-  const form = { randomUsername: "DeeBaba", userExperience: "Creative with potentials" }
-  const encryptedData = cipher.encrypt(form);
-  const decryptedData = cipher.decrypt(encryptedData)
-
-  console.log(encryptedData)
-  console.log(decryptedData)
-} else {
-  console.log('process is not defined') //Rendering, since 'process' object is not defined in browser environments, but only in Node.js
-}
 
   return (
 
@@ -123,7 +130,7 @@ function Dash() {
               </div>
               <img src={line2} className='w-36' alt="" />
             </div>
-            <div className='flex  items-center bg-white p-3 md:w-[35%] w-full mb-2 md:mb-0 border border-slate-200 rounded-lg'>
+            <div className='flex  items-center justify-between bg-white p-3 md:w-[35%] w-full mb-2 md:mb-0 border border-slate-200 rounded-lg'>
               <div>
                 <p className='mt-3 text-sm'>Cash Balance</p>
                 <p className='text-2xl font-bold my-2 text-black'>N8,374,763</p>
