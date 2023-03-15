@@ -7,7 +7,7 @@ import line3 from './assets/line3.png'
 import set from './assets/set.png'
 import down from './assets/down.png'
 import SideNav from './SideNav'
-// import ErrorPage from './ErrorPage'
+import ErrorPage from './ErrorPage'
 import Order from './Order'
 import Trade from './Trade'
 import './slide.css'
@@ -15,8 +15,8 @@ import './slide.css'
 
 function Dash() {
   const [click, setClick] = useState(false)
-  // const [hasError, setHasError] = useState(false);
-  // const [errorMessage, setErrorMessage] = useState('');
+  const [hasError, setHasError] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
   const [dataInfo, setDataInfo] = useState(null)
   const [buyInfo, setBuyInfo] = useState(null)
 
@@ -52,8 +52,8 @@ function Dash() {
         setBuyInfo(decryptedBuySell)
       } catch (error) {
         console.log(error)
-        // setHasError(true);
-        // setErrorMessage(error.message);
+        setHasError(true);
+        setErrorMessage(error.message);
       }
     };
     fetchData()
@@ -101,10 +101,10 @@ function Dash() {
     )
   })
 
-  // // Render the error page if an error occurs
-  // if (hasError) {
-  //   return <ErrorPage message={errorMessage} />;
-  // }
+  // Render the error page if an error occurs
+  if (hasError) {
+    return <ErrorPage message={errorMessage} />;
+  }
 
   return (
     <div className='bg-[#fbfbfb] h-[100vh] relative text-slate-500 cursor-default'>
