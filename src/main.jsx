@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import Dash from './DashBoard'
+import Dash from './components/DashBoard'
 import './index.css'
 
 

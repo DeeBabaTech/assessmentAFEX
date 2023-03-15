@@ -1,12 +1,12 @@
 import React from 'react'
-import org1 from './assets/icon-1.png'
-import org2 from './assets/icon-2.png'
-import org3 from './assets/icon-3.png'
-import org4 from './assets/icon-4.png'
-import org5 from './assets/icon-5.png'
-import org6 from './assets/icon-6.png'
-import org7 from './assets/icon-7.png'
-import logo from './assets/logo.png'
+import org1 from './../assets/icon-1.png'
+import org2 from './../assets/icon-2.png'
+import org3 from './../assets/icon-3.png'
+import org4 from './../assets/icon-4.png'
+import org5 from './../assets/icon-5.png'
+import org6 from './../assets/icon-6.png'
+import org7 from './../assets/icon-7.png'
+import logo from './../assets/logo.png'
 
 
 function SideNav() {
